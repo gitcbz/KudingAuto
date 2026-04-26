@@ -1,0 +1,22 @@
+{
+  "backend": {
+    "host": "127.0.0.1",
+    "port": 5000,
+    "debug": false
+  },
+  "ocr": {
+    "engine": "paddle",
+    "enhanced_mode": false,
+    "super_mode": false
+  },
+  "ui": {
+    "theme": "dark",
+    "language": "zh",
+    "window_width": 1000,
+    "window_height": 800
+  },
+  "api": {
+    "base_url": "https://courseadmin.kuding.cn",
+    "timeout": 10
+  }
+}
