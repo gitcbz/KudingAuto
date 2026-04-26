@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>KuDing Decrypt Test v6</title>
+</head>
+<body>
+    <h1>酷丁解密测试 v6</h1>
+    <div id="status">正在加载 WASM 模块...</div>
+    <button id="decryptBtn" onclick="testDecrypt()" disabled>点击解密</button>
+    <pre id="result"></pre>
+
+    <script>
+        var Module = {
+            locateFile: function(file) {
+                return 'crypt_files/' + file;
+            },
+            onRuntimeInitialized: function() {
+                document.getElementById('status').textContent = 'WASM 模块已加载！';
+                document.getElementById('decryptBtn').disabled = false;
+            }
+        };
+    </script>
+    <script src="crypt_files/crypt.js"></script>
+    <script>
+        // 测试数据
+        const testData = "635991300dc81a7dce8446070e11b58b02c18a8eba09d56d4c86698ea868e947d39fbf39e952612a0d8f53d631a5a634a618d79f2e80974e6ef8b8560b3a388fd42f6b5dbb4175420c3d093ce2879cc74bb164b721d83f880cc2f6b950cfd92e3af1ba4967a4cf6c64116ecd3cd65381d967fa65fada43ec2fe9ce121bf02c6249830b8dcc00a1c8eea3ad0fa96575c93ec4b7e640536389632d6a4677cab4e0d9ac4957ee9c473b6e058b634fd9f4499049ff79c22408810d712968ef0f4012787bae745315b3a01fe5228e0de1bb5bdaade90a514b030c68863956fa8e25d7df94fda869b1b9e65b7a51aa943613a42330a2136a3580a7175100c6a5737fd7ed94f4f6739db44255df085cc2f39699c081d501eaba768e8c7ea5c17a107d8443138da5b9f189eb4fa480506e122dbabd8987044addebac700ec32f52c949463a382a5234af1cf1977466057d154c8695bf5e7c6c867eff95d6c0c0e9937b0d7d1ff5e385e8dba1d5942719021dd449d03410492273ae5ae7cb4e9107d373f81e675035e82d0bdacda8ede65bc7bc1db33ad182b4315eb8ad6e6c3f585bd97198bd0813a9af589ca45d3f5f3d64e4c1eaf13a8309cabf719d78f2c6aad5f77893fa3389e204ca2b7f1cf01bcb80983c1c6512ccf5d224cb2a8c9c27c41df6dcfb2f04d9448f8af2f4e9a2d0a265a341480bb5b2a1d061345c96fa703c0ffd29c8b49c181c232feca005ebaa814b871b153f5c6193d161860bdf6bd47a617c24eee21ddaf1cfe5cd4bd55cd671f4fa111b5256e5484c4a397b82e84e198e3a0cdca68c10e460e985993d47acdc0c5e04bd19ff4684e4d5b31022556fbb30e20c47f101a9b4b1469f43b3210d24f996a778e6bb837b81b36b35716739cbb0e9a48af43058385fecd5a42df582c45dd01a23bb685890a91a9a1101b1c7d047eb8fd6559b7534beaec8e8d1d96ea14a5f5f4bba2a7fe6edde00135765c5e4ed5c95ca837a9671ea97511371540b4645d71400bb2beaacbf8b6fc31833b259353392bf6082439676263107d2e24a156d00f61d13587cc04406c6aaff368b23afb533f8ffa676bebf5fd615c428cafc6268b7fa34e086b128eb395dd64b30a04bd1a19aaac9b0f4008a1c832bc3394abfae83e31b6c9e4ecf62f100125a26ed1750fccd397014ecb24024f3483ff3b34fc721c742616ef099902dd96056f6bc5e6ab4c68048a9d98b4452ef587df3e9742663d09a05e3317a43e65a040253e615cda95c90515bc6db704d1e870d8461c7bce11f323a416fd7119d123e54ae86b468cb04fad46d3eb5060d6ec99b444f7f9803a575d702b3f30b6f350ea17b2f26205e4c2d1b6f945ea9285b67874713a160d14afe64a05b71e170b8c1c26db9acd4ee5277f7a44fa51d3060149972bce58e64c43a79f2c83d085248eb81f250a7911dc6293426159b1d470afc4f43258b282e3ab52d5f81eb0421b3783f381bb060411ade5ea5e3431b1e4e8d7e50d28b0c59662114f1d3fc811c0321b1ed55982f85924bbb094641b76dfbbd45a198f4a1263c415c8086f8d51e696fb72ec5fd23f6aa9f48464a6867afd5a95e9a72f49ce3952b22e0e79f313a23d5e8fdc3f4870950ab0c2d691fa6205d3b79a972c53240dfa5e5efd3b35f81fa2efe4a65473d149cf8bd2cb45e952512faa98243f43d22e55d00bde4415f43fa533a658a2d823de09c8addc0747a6727301faa7474bfc1b2785ca81136b39f7662d2545912e48e043584ecadd57c67730512eb3f8729a791a2cc5dde6ef8b47a5f9c9e60993985dcf721cb27c794bcd6560ea9c754b5c3c2638c8bdc20acb7bc00b002f3cda9cf4d350a667c715063ceaebbd27469a0ad3259af8cb7212b72d7927ae20e3fc9cb0e20e92df743009cbdf0f85f4edaf8da4817795f26d8866d1db136bfb5705e3991757e35f741ec9871ab499d4838f7b748763c7899b5c326bc0e0d284daa55a9ea6b2d5e03388855af2c419d46614ea54a792506c14282e30d76f58bf2a83f2ce544cc2cc47c65947720527f06ac93fd0b20dd212e2ba5de0e60fbcb4d3de8e3ac768e2afb5163cc54ca2f4250ade7da1d388a52d6bc35de696c13986d8bdba4ee84bb1ef825ef198299f0aefbe93a5b1cddec35ec8ee88b07d9db3a15d70f042729050ffc5ae6bdcf7b32abb5f2dc279573e9a6868232b82e69dd565dbed6dfcdc38ad96ef61e56aad4fb223020053a86cc523ce0cfbfc143494cc98966b0e619983d1391138c9260e4ac90fbfbe32c4ae03b9201ee8d7931dd530a92d495c184d8d78927118d08e393af5f9e7bd5f162c0fe773eeb30811d1f6363b34f36fb609c69dece2bbb8e64d5b291a2fef40d5034d007df96debed0ea3256e9d6b84df7fb8eb7351931df77fa3d9287e6ae5d84b915e8711db7b84287f733b71db795bdcdbf82534b27eca886e1aaa710afa3b824ebf43257cf2418599a675aee0615fe09b93064a42fe7f06fda0d607732d1273f76be3bd6ae8086b5584686b4f52c0d6dd9112312a3ee180ccdc10027efae51a47e656f75b23361349e3bf433e421c50f32f72e4540094c5f85cedaa85729ff7572b704bff411292dcf21bd8151fac6c8cae4f8390587761c14fca89afb5ba5b051e7acf1fd1679bc9442236efe7d54d41d694c4e5f900ca0c84dba504c2eebcf14c359ef021e9046434bdbcd19d2352b9562c00444409ff84f3f913bcad9fc255c68dce38c2fdfdc5500557909ff6636c9b932fa4855af561ddbd311f8a5f5e0c5be8996ca6d6e324ca1f1971ef96559f42125d8925eeae9bde36a04e558f02a847b5f21d8fe394f77da3932bf37d981b0f4e45734aee1ea064a49fd3d9371c4d11135266dd1cfac8a98df4305bba9cc5c1e93a33e0206243ab28bc5193e3cb2ebc1d89f8a9e5018198dfe9bb1c7ac9df86852bb85fb69f57a29433e61aca104e87129d364043416783e20fd4f7682d36a2d78ad855bc18fd588f8075f94d17d6bbdc9fee8857b27594af7a6c7dd49b682b4a6fcb9532b8afe0c9ac720da4dd86f64b7546edc68cc6ba571957af02cfa039f0271c9979f464b2ab423407dbb8947709f8c0fd942b1b5c4994bf64eda0ee5b2989f2ddc6296a6d35a4c04072684dd414728ff4262361157f05fde72fa6d83943371fbbf478a33fe26786d4134ed0ae0ee646af514c7d76680da9c989cec002a1a6c9ae5c156ad54a9c29935ebcf946f98b915dbbef80033a83af88797f6f44fac63a5af88137dbea74475e8b863c670d6e96890ff38a28ae34b11fed2c9f07dbc4ddaaaaf261c3069ffe8715d6731b4dc16a9df209888415763adafbeb1039abd4b2c9fd9867de65286fce4d97c0d939afcaca631322e59414fe6dd3ea08ee1962338dc65ddf4762f8e5f2e254b2cfde07039b7f0e8100ce4924f7f461a6c2b2aafd16e8c0b510af2352cb88f169cefebecd761d9b43a48e8eed9a1";
+
+        function testDecrypt() {
+            const resultEl = document.getElementById('result');
+            resultEl.textContent = "开始解密...\n\n";
+
+            try {
+                // 分配内存
+                var t = allocateUTF8(testData);
+                resultEl.textContent += "输入地址: " + t + "\n\n";
+
+                // 尝试解密 - 捕获 C++ 异常
+                var n;
+                try {
+                    n = Module._cdt_descrypt(t);
+                } catch (e) {
+                    // Emscripten 会把 C++ 异常作为数字抛出
+                    if (typeof e === 'number') {
+                        resultEl.textContent += "捕获到 C++ 异常，地址: " + e + "\n\n";
+
+                        // 尝试读取异常消息
+                        // C++ 异常对象通常包含类型信息和消息
+                        // 在 Emscripten 中，异常对象结构在特定偏移处
+
+                        // 尝试读取可能的异常消息字符串
+                        var exceptionPtr = e;
+                        var heapBytes = Module.HEAPU8;
+
+                        resultEl.textContent += "尝试读取异常对象内存...\n";
+
+                        // 读取异常指针附近的数据
+                        var hexDump = "";
+                        for (var i = 0; i < 200; i++) {
+                            if (i % 16 === 0) hexDump += "\n  " + (exceptionPtr + i).toString(16).padStart(8, '0') + ": ";
+                            var b = heapBytes[exceptionPtr + i];
+                            hexDump += b.toString(16).padStart(2, '0') + " ";
+                        }
+                        resultEl.textContent += hexDump + "\n\n";
+
+                        // 尝试读取为字符串
+                        try {
+                            var exceptionMsg = UTF8ToString(exceptionPtr);
+                            resultEl.textContent += "异常消息: " + exceptionMsg + "\n\n";
+                        } catch (e2) {
+                            resultEl.textContent += "无法读取异常消息: " + e2 + "\n\n";
+                        }
+                    } else {
+                        resultEl.textContent += "JavaScript 异常: " + e + "\n";
+                        resultEl.textContent += "名称: " + e.name + "\n";
+                        resultEl.textContent += "消息: " + e.message + "\n\n";
+                    }
+
+                    Module._cdt_free(t);
+                    return;
+                }
+
+                resultEl.textContent += "解密成功！结果地址: " + n + "\n\n";
+
+                // 读取结果
+                var o = UTF8ToString(n);
+                resultEl.textContent += "解密结果长度: " + o.length + "\n\n";
+
+                if (o.length > 0) {
+                    resultEl.textContent += "=== 解密结果 ===\n" + o + "\n\n";
+
+                    try {
+                        var parsed = JSON.parse(o);
+                        resultEl.textContent += "JSON解析成功！\n\n";
+                        resultEl.textContent += JSON.stringify(parsed, null, 2);
+                    } catch (jsonError) {
+                        resultEl.textContent += "JSON解析失败: " + jsonError.message + "\n";
+                    }
+                } else {
+                    resultEl.textContent += "警告: 结果为空\n";
+                }
+
+                // 释放内存
+                Module._cdt_free(t);
+                Module._cdt_free(n);
+
+            } catch (e) {
+                resultEl.textContent += "\n错误: " + e + "\n";
+            }
+        }
+    </script>
+</body>
+</html>

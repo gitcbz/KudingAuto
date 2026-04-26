@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>KuDing Decrypt - Auto</title>
+</head>
+<body>
+    <div id="status">正在加载 WASM 模块...</div>
+
+    <script>
+        var Module = {
+            locateFile: function(file) {
+                return 'crypt_files/' + file;
+            },
+            onRuntimeInitialized: function() {
+                document.getElementById('status').textContent = 'WASM 模块已加载！';
+                doDecrypt();
+            }
+        };
+    </script>
+    <script src="crypt_files/crypt.js"></script>
+    <script>
+        // 自动解密函数
+        function autoDecrypt(encryptedData) {
+            var t = allocateUTF8(encryptedData);
+            var n = Module._cdt_descrypt(t);
+            var o = UTF8ToString(n);
+            Module._cdt_free(t);
+            Module._cdt_free(n);
+            return o;
+        }
+
+        function doDecrypt() {
+            // 从URL参数获取加密数据
+            const urlParams = new URLSearchParams(window.location.search);
+            const encryptedData = urlParams.get('data');
+
+            if (encryptedData && encryptedData !== 'test') {
+                try {
+                    const result = autoDecrypt(encryptedData);
+                    document.body.innerHTML = '<p>' + result + '</p>';
+                } catch (e) {
+                    document.body.innerHTML = '<pre style="color:red">Error: ' + e.message + '\n' + e.stack + '</pre>';
+                }
+            } else {
+                document.getElementById('status').textContent = 'Error: Data no input\nUsage: decrypt_auto.html?data=<encrypted_hex_string>';
+            }
+        }
+    </script>
+</body>
+</html>

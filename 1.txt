@@ -1,0 +1,635 @@
+ "LgQ/": function(e, t, i) {
+        "use strict";
+        i("xfY5"),
+        i("Btvt"),
+        i("a1Th"),
+        i("pIFo");
+        var s = i("NFKh")
+          , a = i.n(s);
+        function o(e) {
+            var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : "XwKsGlMcdPMEhR1B"
+              , i = a.a.enc.Utf8.parse(t)
+              , s = a.a.enc.Utf8.parse(e)
+              , o = a.a.AES.encrypt(s, i, {
+                mode: a.a.mode.ECB,
+                padding: a.a.pad.Pkcs7
+            });
+            return o.toString()
+        }
+        function n(e) {
+            var t = e.$el.parentNode.offsetWidth || window.offsetWidth
+              , i = e.$el.parentNode.offsetHeight || window.offsetHeight;
+            return {
+                imgWidth: -1 != e.imgSize.width.indexOf("%") ? parseInt(this.imgSize.width) / 100 * t + "px" : this.imgSize.width,
+                imgHeight: -1 != e.imgSize.height.indexOf("%") ? parseInt(this.imgSize.height) / 100 * i + "px" : this.imgSize.height,
+                barWidth: -1 != e.barSize.width.indexOf("%") ? parseInt(this.barSize.width) / 100 * t + "px" : this.barSize.width,
+                barHeight: -1 != e.barSize.height.indexOf("%") ? parseInt(this.barSize.height) / 100 * i + "px" : this.barSize.height
+            }
+        }
+        i("VRzm");
+        var l = i("vDqi")
+          , r = i.n(l);
+        r.a.defaults.baseURL = BASE_API;
+        var c = r.a.create({
+            timeout: 4e4,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+        });
+        c.interceptors.request.use((function(e) {
+            return e
+        }
+        ), (function(e) {
+            Promise.reject(e)
+        }
+        )),
+        c.interceptors.response.use((function(e) {
+            return e.data
+        }
+        ), (function(e) {}
+        ));
+        var d = c;
+        var u = i("TikD")
+          , h = {
+            name: "VerifySlide",
+            props: {
+                captchaType: {
+                    type: String
+                },
+                type: {
+                    type: String,
+                    default: "1"
+                },
+                mode: {
+                    type: String,
+                    default: "fixed"
+                },
+                vSpace: {
+                    type: Number,
+                    default: 5
+                },
+                explain: {
+                    type: String,
+                    default: "向右滑动完成验证"
+                },
+                imgSize: {
+                    type: Object,
+                    default: function() {
+                        return {
+                            width: "310px",
+                            height: "155px"
+                        }
+                    }
+                },
+                blockSize: {
+                    type: Object,
+                    default: function() {
+                        return {
+                            width: "50px",
+                            height: "50px"
+                        }
+                    }
+                },
+                barSize: {
+                    type: Object,
+                    default: function() {
+                        return {
+                            width: "310px",
+                            height: "40px"
+                        }
+                    }
+                },
+                defaultImg: {
+                    type: String,
+                    default: ""
+                }
+            },
+            data: function() {
+                return {
+                    secretKey: "",
+                    passFlag: "",
+                    backImgBase: "",
+                    blockBackImgBase: "",
+                    backToken: "",
+                    startMoveTime: "",
+                    endMovetime: "",
+                    tipsBackColor: "",
+                    tipWords: "",
+                    text: "",
+                    finishText: "",
+                    setSize: {
+                        imgHeight: 0,
+                        imgWidth: 0,
+                        barHeight: 0,
+                        barWidth: 0
+                    },
+                    top: 0,
+                    left: 0,
+                    moveBlockLeft: void 0,
+                    leftBarWidth: void 0,
+                    moveBlockBackgroundColor: void 0,
+                    leftBarBorderColor: "#ddd",
+                    iconColor: void 0,
+                    iconClass: "icon-right",
+                    status: !1,
+                    isEnd: !1,
+                    showRefresh: !0,
+                    transitionLeft: "",
+                    transitionWidth: "",
+                    captchaId: ""
+                }
+            },
+            computed: {
+                barArea: function() {
+                    return this.$el.querySelector(".verify-bar-area")
+                },
+                resetSize: function() {
+                    return n
+                }
+            },
+            created: function() {
+                this.init()
+            },
+            mounted: function() {
+                this.$el.onselectstart = function() {
+                    return !1
+                }
+            },
+            beforeDestroy: function() {
+                window.removeEventListener("touchmove", this.move),
+                window.removeEventListener("mousemove", this.move),
+                window.removeEventListener("touchend", this.end),
+                window.removeEventListener("mouseup", this.end)
+            },
+            methods: {
+                init: function() {
+                    var e = this;
+                    this.text = this.explain,
+                    this.getPictrue(),
+                    this.$nextTick((function() {
+                        var t = e.resetSize(e);
+                        for (var i in t)
+                            e.$set(e.setSize, i, t[i]);
+                        e.$parent.$emit("ready", e)
+                    }
+                    ));
+                    window.removeEventListener("touchmove", this.move),
+                    window.removeEventListener("mousemove", this.move),
+                    window.removeEventListener("touchend", this.end),
+                    window.removeEventListener("mouseup", this.end),
+                    window.addEventListener("touchmove", this.move),
+                    window.addEventListener("mousemove", this.move),
+                    window.addEventListener("touchend", this.end),
+                    window.addEventListener("mouseup", this.end)
+                },
+                start: function(e) {
+                    if ((e = e || window.event).touches)
+                        t = e.touches[0].pageX;
+                    else
+                        var t = e.clientX;
+                    this.startLeft = Math.floor(t - this.barArea.getBoundingClientRect().left),
+                    this.startMoveTime = +new Date,
+                    0 == this.isEnd && (this.text = "",
+                    this.moveBlockBackgroundColor = "#337ab7",
+                    this.leftBarBorderColor = "#337AB7",
+                    this.iconColor = "#fff",
+                    e.stopPropagation(),
+                    this.status = !0)
+                },
+                move: function(e) {
+                    if (e = e || window.event,
+                    this.status && 0 == this.isEnd) {
+                        if (e.touches)
+                            t = e.touches[0].pageX;
+                        else
+                            var t = e.clientX;
+                        var i = t - this.barArea.getBoundingClientRect().left;
+                        i >= this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2 && (i = this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2),
+                        i <= 0 && (i = parseInt(parseInt(this.blockSize.width) / 2)),
+                        this.moveBlockLeft = i - this.startLeft + "px",
+                        this.leftBarWidth = i - this.startLeft + "px"
+                    }
+                },
+                end: function() {
+                    var e = this;
+                    this.endMovetime = +new Date;
+                    var t = this;
+                    if (this.status && 0 == this.isEnd) {
+                        var i = parseInt((this.moveBlockLeft || "").replace("px", ""));
+                        i = 310 * i / parseInt(this.setSize.imgWidth),
+                        function(e) {
+                            return d({
+                                url: "/captcha/check",
+                                method: "post",
+                                data: e
+                            })
+                        }({
+                            captchaType: this.captchaType,
+                            captchaId: this.captchaId,
+                            pointJson: this.secretKey ? o(JSON.stringify({
+                                x: i,
+                                y: 5
+                            }), this.secretKey) : JSON.stringify({
+                                x: i,
+                                y: 5
+                            }),
+                            token: this.backToken
+                        }).then((function(s) {
+                            if ("0000" == s.repCode) {
+                                e.moveBlockBackgroundColor = "#5cb85c",
+                                e.leftBarBorderColor = "#5cb85c",
+                                e.iconColor = "#fff",
+                                e.iconClass = "icon-check",
+                                e.showRefresh = !1,
+                                e.isEnd = !0,
+                                e.passFlag = !0,
+                                e.tipWords = "".concat(((e.endMovetime - e.startMoveTime) / 1e3).toFixed(2), "s验证成功");
+                                e.secretKey ? o(e.backToken + "---" + JSON.stringify({
+                                    x: i,
+                                    y: 5
+                                }), e.secretKey) : (e.backToken,
+                                JSON.stringify({
+                                    x: i,
+                                    y: 5
+                                }));
+                                setTimeout((function() {
+                                    t.tipWords = "",
+                                    t.$parent.closeBox(),
+                                    t.$emit("onSuccess", t.captchaId)
+                                }
+                                ), 1e3)
+                            } else
+                                e.moveBlockBackgroundColor = "#d9534f",
+                                e.leftBarBorderColor = "#d9534f",
+                                e.iconColor = "#fff",
+                                e.iconClass = "icon-close",
+                                e.passFlag = !1,
+                                setTimeout((function() {
+                                    t.refresh()
+                                }
+                                ), 1e3),
+                                e.$parent.$emit("error", e),
+                                e.tipWords = "验证失败",
+                                setTimeout((function() {
+                                    e.tipWords = ""
+                                }
+                                ), 1e3)
+                        }
+                        )),
+                        this.status = !1
+                    }
+                },
+                refresh: function() {
+                    var e = this;
+                    this.showRefresh = !0,
+                    this.finishText = "",
+                    this.transitionLeft = "left .3s",
+                    this.moveBlockLeft = 0,
+                    this.leftBarWidth = void 0,
+                    this.transitionWidth = "width .3s",
+                    this.leftBarBorderColor = "#ddd",
+                    this.moveBlockBackgroundColor = "#fff",
+                    this.iconColor = "#000",
+                    this.iconClass = "icon-right",
+                    this.isEnd = !1,
+                    this.getPictrue(),
+                    setTimeout((function() {
+                        e.transitionWidth = "",
+                        e.transitionLeft = "",
+                        e.text = e.explain
+                    }
+                    ), 300)
+                },
+                getPictrue: function() {
+                    var e = this;
+                    this.captchaId = "captchaId-" + Object(u.a)(),
+                    function(e) {
+                        return d({
+                            url: "/captcha/get",
+                            method: "post",
+                            data: e
+                        })
+                    }({
+                        captchaType: this.captchaType,
+                        clientUid: localStorage.getItem("slider"),
+                        captchaId: this.captchaId,
+                        ts: Date.now()
+                    }).then((function(t) {
+                        "0000" == t.repCode ? (e.backImgBase = t.repData.originalImageBase64,
+                        e.blockBackImgBase = t.repData.jigsawImageBase64,
+                        e.backToken = t.repData.token,
+                        e.secretKey = t.repData.secretKey) : e.tipWords = t.repMsg,
+                        "6201" == t.repCode && (e.backImgBase = null,
+                        e.blockBackImgBase = null)
+                    }
+                    ))
+                }
+            }
+        }
+          , p = i("KHd+")
+          , m = {
+            name: "Vue2Verify",
+            components: {
+                VerifySlide: Object(p.a)(h, (function() {
+                    var e = this
+                      , t = e.$createElement
+                      , i = e._self._c || t;
+                    return i("div", {
+                        staticStyle: {
+                            position: "relative"
+                        }
+                    }, ["2" === e.type ? i("div", {
+                        staticClass: "verify-img-out",
+                        style: {
+                            height: parseInt(e.setSize.imgHeight) + e.vSpace + "px"
+                        }
+                    }, [i("div", {
+                        staticClass: "verify-img-panel",
+                        style: {
+                            width: e.setSize.imgWidth,
+                            height: e.setSize.imgHeight
+                        }
+                    }, [i("img", {
+                        staticStyle: {
+                            width: "100%",
+                            height: "100%",
+                            display: "block"
+                        },
+                        attrs: {
+                            src: e.backImgBase ? "data:image/png;base64," + e.backImgBase : e.defaultImg,
+                            alt: ""
+                        }
+                    }), e._v(" "), i("div", {
+                        directives: [{
+                            name: "show",
+                            rawName: "v-show",
+                            value: e.showRefresh,
+                            expression: "showRefresh"
+                        }],
+                        staticClass: "verify-refresh",
+                        on: {
+                            click: e.refresh
+                        }
+                    }, [i("i", {
+                        staticClass: "iconfont icon-refresh"
+                    })]), e._v(" "), i("transition", {
+                        attrs: {
+                            name: "tips"
+                        }
+                    }, [e.tipWords ? i("span", {
+                        staticClass: "verify-tips",
+                        class: e.passFlag ? "suc-bg" : "err-bg"
+                    }, [e._v(e._s(e.tipWords))]) : e._e()])], 1)]) : e._e(), e._v(" "), i("div", {
+                        staticClass: "verify-bar-area",
+                        style: {
+                            width: e.setSize.imgWidth,
+                            height: e.barSize.height,
+                            "line-height": e.barSize.height
+                        }
+                    }, [i("span", {
+                        staticClass: "verify-msg",
+                        domProps: {
+                            textContent: e._s(e.text)
+                        }
+                    }), e._v(" "), i("div", {
+                        staticClass: "verify-left-bar",
+                        style: {
+                            width: void 0 !== e.leftBarWidth ? e.leftBarWidth : e.barSize.height,
+                            height: e.barSize.height,
+                            "border-color": e.leftBarBorderColor,
+                            transaction: e.transitionWidth
+                        }
+                    }, [i("span", {
+                        staticClass: "verify-msg",
+                        domProps: {
+                            textContent: e._s(e.finishText)
+                        }
+                    }), e._v(" "), i("div", {
+                        staticClass: "verify-move-block",
+                        style: {
+                            width: e.barSize.height,
+                            height: e.barSize.height,
+                            "background-color": e.moveBlockBackgroundColor,
+                            left: e.moveBlockLeft,
+                            transition: e.transitionLeft
+                        },
+                        on: {
+                            touchstart: e.start,
+                            mousedown: e.start
+                        }
+                    }, [i("i", {
+                        class: ["verify-icon iconfont", e.iconClass],
+                        style: {
+                            color: e.iconColor
+                        }
+                    }), e._v(" "), "2" === e.type ? i("div", {
+                        staticClass: "verify-sub-block",
+                        style: {
+                            width: Math.floor(47 * parseInt(e.setSize.imgWidth) / 310) + "px",
+                            height: e.setSize.imgHeight,
+                            top: "-" + (parseInt(e.setSize.imgHeight) + e.vSpace) + "px",
+                            "background-size": e.setSize.imgWidth + " " + e.setSize.imgHeight
+                        }
+                    }, [i("img", {
+                        staticStyle: {
+                            width: "100%",
+                            height: "100%",
+                            display: "block"
+                        },
+                        attrs: {
+                            src: "data:image/png;base64," + e.blockBackImgBase,
+                            alt: ""
+                        }
+                    })]) : e._e()])])])])
+                }
+                ), [], !1, null, null, null).exports
+            },
+            props: {
+                locale: {
+                    require: !1,
+                    type: String,
+                    default: function() {
+                        if (navigator.language)
+                            var e = navigator.language;
+                        else
+                            e = navigator.browserLanguage;
+                        return e
+                    }
+                },
+                captchaType: {
+                    type: String,
+                    required: !0
+                },
+                figure: {
+                    type: Number
+                },
+                arith: {
+                    type: Number
+                },
+                mode: {
+                    type: String,
+                    default: "pop"
+                },
+                vSpace: {
+                    type: Number
+                },
+                explain: {
+                    type: String
+                },
+                imgSize: {
+                    type: Object,
+                    default: function() {
+                        return {
+                            width: "310px",
+                            height: "155px"
+                        }
+                    }
+                },
+                blockSize: {
+                    type: Object
+                },
+                barSize: {
+                    type: Object
+                }
+            },
+            data: function() {
+                return {
+                    clickShow: !1,
+                    verifyType: "2",
+                    componentType: "VerifySlide",
+                    defaultImg: i("z0mT")
+                }
+            },
+            computed: {
+                instance: function() {
+                    return this.$refs.instance || {}
+                },
+                showBox: function() {
+                    return "pop" != this.mode || this.clickShow
+                }
+            },
+            watch: {
+                captchaType: {
+                    immediate: !0,
+                    handler: function(e) {
+                        switch (e.toString()) {
+                        case "blockPuzzle":
+                            this.verifyType = "2",
+                            this.componentType = "VerifySlide";
+                            break;
+                        case "clickWord":
+                            this.verifyType = "",
+                            this.componentType = "VerifyPoints"
+                        }
+                    }
+                }
+            },
+            mounted: function() {
+                this.uuid()
+            },
+            methods: {
+                uuid: function() {
+                    for (var e = [], t = 0; t < 36; t++)
+                        e[t] = "0123456789abcdef".substr(Math.floor(16 * Math.random()), 1);
+                    e[14] = "4",
+                    e[19] = "0123456789abcdef".substr(3 & e[19] | 8, 1),
+                    e[8] = e[13] = e[18] = e[23] = "-";
+                    var i = "slider-" + e.join("")
+                      , s = "point-" + e.join("");
+                    localStorage.getItem("slider") || localStorage.setItem("slider", i),
+                    localStorage.getItem("point") || localStorage.setItem("point", s)
+                },
+                i18n: function(e) {
+                    if (this.$t)
+                        return this.$t(e);
+                    var t = this.$options.i18n.messages[this.locale] || this.$options.i18n.messages["en-US"];
+                    return t[e]
+                },
+                refresh: function() {
+                    this.instance.refresh && this.instance.refresh()
+                },
+                closeBox: function() {
+                    this.clickShow = !1
+                },
+                show: function() {
+                    "pop" == this.mode && (this.clickShow = !0)
+                },
+                success: function(e) {
+                    this.$emit("verifySuccess", e)
+                }
+            }
+        }
+          , g = (i("C9yZ"),
+        Object(p.a)(m, (function() {
+            var e = this
+              , t = e.$createElement
+              , i = e._self._c || t;
+            return i("div", {
+                directives: [{
+                    name: "show",
+                    rawName: "v-show",
+                    value: e.showBox,
+                    expression: "showBox"
+                }],
+                class: "pop" == e.mode ? "mask" : ""
+            }, [i("div", {
+                class: "pop" == e.mode ? "verifybox" : "",
+                style: {
+                    "max-width": parseInt(e.imgSize.width) + 30 + "px"
+                }
+            }, ["pop" == e.mode ? i("div", {
+                staticClass: "verifybox-top"
+            }, [e._v("\n      请完成安全验证\n      "), i("span", {
+                staticClass: "verifybox-close",
+                on: {
+                    click: e.closeBox
+                }
+            }, [i("i", {
+                staticClass: "iconfont icon-close"
+            })])]) : e._e(), e._v(" "), i("div", {
+                staticClass: "verifybox-bottom",
+                style: {
+                    padding: "pop" == e.mode ? "15px" : "0"
+                }
+            }, [i(e.componentType, {
+                ref: "instance",
+                tag: "components",
+                attrs: {
+                    "captcha-type": e.captchaType,
+                    type: e.verifyType,
+                    figure: e.figure,
+                    arith: e.arith,
+                    mode: e.mode,
+                    "v-space": e.vSpace,
+                    explain: e.explain,
+                    "img-size": e.imgSize,
+                    "block-size": e.blockSize,
+                    "bar-size": e.barSize,
+                    "default-img": e.defaultImg
+                },
+                on: {
+                    onSuccess: e.success
+                }
+            })], 1)])])
+        }
+        ), [], !1, null, null, null));
+        t.a = g.exports
+    },
+    Lgjv: function(e, t, i) {
+        var s = i("ne8i")
+          , a = i("l0Rn")
+          , o = i("vhPU");
+        e.exports = function(e, t, i, n) {
+            var l = String(o(e))
+              , r = l.length
+              , c = void 0 === i ? " " : String(i)
+              , d = s(t);
+            if (d <= r || "" == c)
+                return l;
+            var u = d - r
+              , h = a.call(c, Math.ceil(u / c.length));
+            return h.length > u && (h = h.slice(0, u)),
+            n ? h + l : l + h
+        }
+    },
